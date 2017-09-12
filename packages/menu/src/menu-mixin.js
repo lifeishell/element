@@ -40,7 +40,6 @@ export default {
         if (parent.$options.componentName === 'ElSubmenu') {
           padding += this.rootMenu.leftPadding;
         }
-        parent = parent.$parent;
       }
       return {paddingLeft: padding + 'px'};
     }
