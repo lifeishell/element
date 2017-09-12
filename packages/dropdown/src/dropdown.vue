@@ -51,6 +51,7 @@
     watch: {
       visible(val) {
         this.broadcast('ElDropdownMenu', 'visible', val);
+        this.$emit('visible-change', val);
       }
     },
 
@@ -76,6 +77,7 @@
           ? this.$refs.trigger.$el
           : this.$slots.default[0].elm;
 
+        if (triggerElm.disabled) return;
         if (trigger === 'hover') {
           triggerElm.addEventListener('mouseenter', show);
           triggerElm.addEventListener('mouseleave', hide);

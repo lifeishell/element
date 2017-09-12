@@ -202,6 +202,122 @@ describe('DatePicker', () => {
     }, DELAY);
   });
 
+  describe('input event', () => {
+    // mimic standard <select>'s behavior
+    // emit input if and only if value changes
+    afterEach(() => {
+      destroyVM(vm);
+    });
+
+    it('works for type=date', done => {
+      let emitted = false;
+      vm = createVue({
+        template: `
+          <el-date-picker
+            ref="compo"
+            v-model="value"
+            type="date"
+            @input="handleInput" />`,
+
+        methods: {
+          handleInput(val) {
+            emitted = true;
+          }
+        },
+
+        data() {
+          return {
+            value: ''
+          };
+        }
+      }, true);
+
+      const input = vm.$el.querySelector('input');
+
+      input.blur();
+      input.focus();
+
+      setTimeout(_ => {
+        const picker = vm.$refs.compo.picker;
+
+        picker.$el.querySelector('td.available').click();
+        setTimeout(_ => {
+          expect(emitted).to.true;
+          emitted = false;
+
+          setTimeout(_ => {
+            input.blur();
+            input.focus();
+
+            picker.$el.querySelector('td.available').click();
+            setTimeout(_ => {
+              expect(emitted).to.false;
+              done();
+            }, DELAY);
+          }, DELAY);
+        }, DELAY);
+      }, DELAY);
+    });
+
+    it('works for type=daterange', done => {
+      let emitted = false;
+      vm = createVue({
+        template: `
+          <el-date-picker
+            ref="compo"
+            v-model="value"
+            type="daterange"
+            @input="handleInput" />`,
+
+        methods: {
+          handleInput(val) {
+            emitted = true;
+          }
+        },
+
+        data() {
+          return {
+            value: ''
+          };
+        }
+      }, true);
+
+      const input = vm.$el.querySelector('input');
+
+      input.blur();
+      input.focus();
+
+      setTimeout(_ => {
+        const picker = vm.$refs.compo.picker;
+
+        picker.$el.querySelector('td.available').click();
+        setTimeout(_ => {
+          picker.$el.querySelector('td.available + td.available').click();
+          setTimeout(_ => {
+            expect(emitted).to.true;
+            emitted = false;
+
+            setTimeout(_ => {
+              input.blur();
+              input.focus();
+
+              const picker = vm.$refs.compo.picker;
+              picker.$el.querySelector('td.available').click();
+              setTimeout(_ => {
+                picker.$el.querySelector('td.available + td.available').click();
+                setTimeout(_ => {
+                  expect(emitted).to.false;
+                  done();
+                });
+              }, DELAY);
+            }, DELAY);
+          });
+        }, DELAY);
+      }, DELAY);
+    });
+
+  });
+
   it('default value', done => {
     const toDateStr = date => {
       let d = new Date(date);
@@ -269,7 +385,7 @@ describe('DatePicker', () => {
       input.value = '2000-10-1';
       triggerEvent(input, 'change', true);
       setTimeout(_ => {
-        expect(vm.pickerVisible).to.true; // 敲回车不会消失
+        expect(vm.pickerVisible).to.false;
         expect(vm.picker.date.getFullYear()).to.equal(2000);
         expect(vm.picker.date.getMonth()).to.equal(9);
         expect(vm.picker.date.getDate()).to.equal(1);

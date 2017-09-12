@@ -178,8 +178,22 @@ const TYPE_VALUE_RESOLVER_MAP = {
 };
 const PLACEMENT_MAP = {
   left: 'bottom-start',
-  center: 'bottom-center',
+  center: 'bottom',
   right: 'bottom-end'
+};
+
+// only considers date-picker's value: Date or [Date, Date]
+const valueEquals = function(a, b) {
+  const aIsArray = a instanceof Array;
+  const bIsArray = b instanceof Array;
+  if (aIsArray && bIsArray) {
+    return new Date(a[0]).getTime() === new Date(b[0]).getTime() &&
+           new Date(a[1]).getTime() === new Date(b[1]).getTime();
+  }
+  if (!aIsArray && !bIsArray) {
+    return new Date(a).getTime() === new Date(b).getTime();
+  }
+  return false;
 };
 
 export default {
@@ -395,9 +409,10 @@ export default {
     handleKeydown(event) {
       const keyCode = event.keyCode;
 
-      // tab
-      if (keyCode === 9) {
+      // TAB or ESC
+      if (keyCode === 9 || keyCode === 27) {
         this.pickerVisible = false;
+        event.stopPropagation();
       }
     },
 
@@ -470,7 +485,10 @@ export default {
 
       this.picker.$on('dodestroy', this.doDestroy);
       this.picker.$on('pick', (date = '', visible = false) => {
-        this.$emit('input', date);
+        // do not emit if values are same
+        if (!valueEquals(this.value, date)) {
+          this.$emit('input', date);
+        }
         this.pickerVisible = this.picker.visible = visible;
         this.picker.resetView && this.picker.resetView();
       });

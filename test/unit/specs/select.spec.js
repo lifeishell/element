@@ -113,6 +113,7 @@ describe('Select', () => {
             <el-option
               v-for="item in options"
               :label="item.label"
+              :key="item.value"
               :value="item.value">
             </el-option>
           </el-select>
@@ -147,6 +148,7 @@ describe('Select', () => {
             <el-option
               v-for="item in options"
               :label="item.label"
+              :key="item.value"
               :value="item.value">
               <p>{{item.label}} {{item.value}}</p>
             </el-option>
@@ -226,6 +228,7 @@ describe('Select', () => {
             <el-option
               v-for="item in options"
               :label="item.label"
+              :key="item.value"
               :value="item.value">
             </el-option>
           </el-select>
@@ -285,6 +288,44 @@ describe('Select', () => {
     }, 100);
   });
 
+  it('object typed value', done => {
+    vm = createVue({
+      template: `
+        <div>
+          <el-select v-model="value" value-key="id">
+            <el-option
+              v-for="item in options"
+              :label="item.label"
+              :key="item.id"
+              :value="item">
+            </el-option>
+          </el-select>
+        </div>
+      `,
+
+      data() {
+        return {
+          options: [{
+            id: 1,
+            label: 'label1'
+          }, {
+            id: 2,
+            label: 'label2'
+          }],
+          value: {
+            id: 1,
+            label: 'label1'
+          }
+        };
+      }
+    }, true);
+    setTimeout(() => {
+      expect(vm.$el.querySelector('.el-input__inner').value).to.equal('label1');
+      expect(vm.$el.querySelector('.el-select-dropdown__item').classList.contains('selected'));
+      done();
+    }, 100);
+  });
+
   it('custom el-option template', () => {
     vm = createVue({
       template: `
@@ -293,6 +334,7 @@ describe('Select', () => {
             <el-option
               v-for="item in options"
               :label="item.label"
+              :key="item.value"
               :value="item.value">
               <p>{{item.label}} {{item.value}}</p>
             </el-option>
@@ -320,11 +362,13 @@ describe('Select', () => {
           <el-select v-model="value">
             <el-option-group
               v-for="group in options"
+              :key="group.label"
               :disabled="group.disabled"
               :label="group.label">
               <el-option
                 v-for="item in group.options"
                 :label="item.label"
+                :key="item.value"
                 :value="item.value">
               </el-option>
             </el-option-group>
@@ -404,6 +448,58 @@ describe('Select', () => {
     }, 10);
   });
 
+  it('default-first-option', done => {
+    vm = createVue({
+      template: `
+        <div>
+          <el-select
+            v-model="value"
+            default-first-option
+            filterable
+          >
+            <el-option
+              v-for="item in options"
+              :label="item"
+              :key="item.value"
+              :value="item"
+            />
+          </el-select>
+        </div>
+      `,
+      data() {
+        return {
+          options: ['1', '2', '3', '4', '5'],
+          value: ''
+        };
+      },
+      methods: {
+        filterMethod(query) {
+          // simulate async filterMethod / remoteMethod
+          setTimeout(() => {
+            this.options.filter(option => option.label.indexOf(query) !== -1);
+          }, 5);
+        }
+      }
+    }, true);
+
+    const select = vm.$children[0];
+    setTimeout(() => {
+      select.$el.querySelector('input').focus();
+      select.query = '3';
+      select.selectedLabel = '3';
+      setTimeout(() => {
+        const enterKey = document.createEvent('Events');
+        enterKey.initEvent('keydown', true, true);
+        enterKey.keyCode = 13;
+        select.$el.querySelector('input').dispatchEvent(enterKey);
+        setTimeout(() => {
+          expect(select.value).to.equal('3');
+          done();
+        }, 10);
+      }, 10);  // wait for async filterMethod
+    }, 10);
+  });
+
   it('allow create', done => {
     vm = getSelectVm({ filterable: true, allowCreate: true });
     const select = vm.$children[0];
@@ -453,6 +549,7 @@ describe('Select', () => {
             <el-option
               v-for="item in options"
               :label="item.label"
+              :key="item.value"
               :value="item.value">
               <p>{{item.label}} {{item.value}}</p>
             </el-option>

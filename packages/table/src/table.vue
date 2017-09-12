@@ -4,9 +4,10 @@
       'el-table--fit': fit,
       'el-table--striped': stripe,
       'el-table--border': border,
+      'el-table--hidden': isHidden,
       'el-table--fluid-height': maxHeight,
       'el-table--enable-row-hover': !store.states.isComplex,
-      'el-table--enable-row-transition': true || (store.states.data || []).length !== 0 && (store.states.data || []).length < 100
+      'el-table--enable-row-transition': (store.states.data || []).length !== 0 && (store.states.data || []).length < 100
     }"
     @mouseleave="handleMouseLeave($event)">
     <div class="hidden-columns" ref="hiddenColumns"><slot></slot></div>
@@ -26,6 +27,7 @@
       <table-body
         :context="context"
         :store="store"
+        :stripe="stripe"
         :layout="layout"
         :row-class-name="rowClassName"
         :row-style="rowStyle"
@@ -69,6 +71,7 @@
         <table-body
           fixed="left"
           :store="store"
+          :stripe="stripe"
           :layout="layout"
           :highlight="highlightCurrentRow"
           :row-class-name="rowClassName"
@@ -110,6 +113,7 @@
         <table-body
           fixed="right"
           :store="store"
+          :stripe="stripe"
           :layout="layout"
           :row-class-name="rowClassName"
           :row-style="rowStyle"
@@ -253,11 +257,13 @@
         });
 
         const scrollBodyWrapper = event => {
-          const deltaX = event.deltaX;
+          const { deltaX, deltaY } = event;
+
+          if (Math.abs(deltaX) < Math.abs(deltaY)) return;
 
           if (deltaX > 0) {
             this.bodyWrapper.scrollLeft += 10;
-          } else {
+          } else if (deltaX < 0) {
             this.bodyWrapper.scrollLeft -= 10;
           }
         };
@@ -288,6 +294,9 @@
           } else if (this.shouldUpdateHeight) {
             this.layout.updateHeight();
           }
+          if (this.$el) {
+            this.isHidden = this.$el.clientWidth === 0;
+          }
         });
       }
     },
@@ -309,7 +318,7 @@
       },
 
       selection() {
-        return this.store.selection;
+        return this.store.states.selection;
       },
 
       columns() {
@@ -337,7 +346,9 @@
           };
         } else if (this.maxHeight) {
           style = {
-            'max-height': (this.showHeader ? this.maxHeight - this.layout.headerHeight : this.maxHeight) + 'px'
+            'max-height': (this.showHeader
+              ? this.maxHeight - this.layout.headerHeight - this.layout.footerHeight
+              : this.maxHeight - this.layout.footerHeight) + 'px'
           };
         }
 
@@ -401,6 +412,7 @@
         immediate: true,
         handler(val) {
           this.store.commit('setData', val);
+          if (this.$ready) this.doLayout();
         }
       },
 
@@ -445,6 +457,7 @@
       return {
         store,
         layout,
+        isHidden: false,
         renderExpanded: null,
         resizeProxyVisible: false
       };
