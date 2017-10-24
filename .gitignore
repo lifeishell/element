@@ -12,3 +12,4 @@ fe.element/element-ui
 .npmrc
 coverage
 waiter.config.js
+build/bin/algolia-key.js
