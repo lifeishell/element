@@ -86,9 +86,8 @@
             return activeOptions;
           };
 
-          const optionsCopy = copyArray(this.options, this.props);
-          formatOptions(optionsCopy);
-          return loadActiveOptions(optionsCopy);
+          formatOptions(this.options);
+          return loadActiveOptions(this.options);
         }
       }
     },
