@@ -378,7 +378,14 @@
         this.onPick && this.onPick(val);
         this.maxDate = val.maxDate;
         this.minDate = val.minDate;
-        if (!close || this.showTime) return;
+        
+	// workaround for https://github.com/ElemeFE/element/issues/7539, should remove this block when we don't have to care about Chromium 55 - 57
+        setTimeout(() => {
+          this.maxDate = val.maxDate;
+          this.minDate = val.minDate;
+        }, 10);
+	
+	if (!close || this.showTime) return;
         this.handleConfirm();
       },
 
