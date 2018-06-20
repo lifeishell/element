@@ -147,6 +147,14 @@
     },
     methods: {
       validate(trigger, callback = noop) {
+
+          var data;
+
+          if (typeof trigger === 'object') {
+              data = trigger.data;
+              trigger = trigger.trigger;
+          }
+
         var rules = this.getFilteredRule(trigger);
         if (!rules || rules.length === 0) {
           callback();
@@ -161,7 +169,7 @@
         var validator = new AsyncValidator(descriptor);
         var model = {};
 
-        model[this.prop] = this.fieldValue;
+        model[this.prop] = data ? data : this.fieldValue;
 
         validator.validate(model, { firstFields: true }, (errors, fields) => {
           this.validateState = !errors ? 'success' : 'error';
@@ -209,13 +217,13 @@
       onFieldBlur() {
         this.validate('blur');
       },
-      onFieldChange() {
+      onFieldChange(data) {
         if (this.validateDisabled) {
           this.validateDisabled = false;
           return;
         }
 
-        this.validate('change');
+        this.validate({ trigger: 'change', data: data });
       }
     },
     mounted() {
