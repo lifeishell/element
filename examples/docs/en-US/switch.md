@@ -114,18 +114,21 @@ Switch is used for switching between two opposing states.
 ----| ----| ----| ----|----
 disabled | whether Switch is disabled | boolean | — | false
 width | width of Switch | number | — | 58 (with text) / 46 (no text)
-on-close-icon | class name of the icon displayed when in `on` state, overrides `on-text` | string | — | —
-off-close-icon |class name of the icon displayed when in `off` state, overrides `off-text`| string | — | —
+on-icon-class | class name of the icon displayed when in `on` state, overrides `on-text` | string | — | —
+off-icon-class |class name of the icon displayed when in `off` state, overrides `off-text`| string | — | —
 on-text | text displayed when in `on` state | string | — | ON
 off-text | text displayed when in `off` state | string | — | OFF
 on-value  | switch value when in `on` state | boolean / string / number | — | true
 off-value  | switch value when in `off` state | boolean / string / number | — | false
 on-color | background color when in `on` state | string | — | #20A0FF
 off-color | background color when in `off` state | string | — | #C0CCDA
-name| input name of Switch | string | — | —
+name | input name of Switch | string | — | —
+allow-focus | allow `focus` and `blur` events on the input | boolean | — | false
 
 ### Events
 
  Event Name | Description | Parameters
 ---- | ----| ----
 change | triggers when value changes | value after changing
+blur | triggers on blur (if `allow-focus` is true) | event: Event
+focus | triggers on focus (if `allow-focus` is true) | event: Event

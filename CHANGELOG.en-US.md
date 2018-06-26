@@ -1,5 +1,70 @@
 ## Changelog
 
+### 1.4.12
+
+*2017-11-30*
+
+- Fixed input height error of Select when `size` is not assigned, #8460
+
+### 1.4.11
+
+*2017-11-24*
+
+- Now Pagination's jumper will correct invalid page inputs, #8408 (by @decadef20)
+- Fixed high CPU consumption caused by hidden Table, #8484
+
+### 1.4.10
+
+*2017-11-14*
+
+- Fixed missing Tooltip registration in Menu, #7996
+- Fixed console error of `clientHeight` when `disabled` of Select dynamically updates, #8018 (by @wubaiqing)
+
+### 1.4.9
+
+*2017-11-01*
+
+- Fixed Form validating not triggered correctly in some conditions, #7744
+- Fixed range selection of DatePicker not working in Chromium 53-57 browsers, #7927
+
+### 1.4.8
+
+*2017-10-24*
+
+- Fixed SubMenu retracting when moving the mouse rapidly on the SubMenu of collapsed Menu, #7579
+- Fixed hidden last shortcut of DateTimePicker when the shortcut menu is long, #7567 (by @DuLinRain)
+- Added `show-timeout` and `hide-timeout` attributes for Dropdown, #7621 (by @phongkt-dev)
+
+### 1.4.7
+
+*2017-10-16*
+
+- Fixed compatibility of Autocomplete and Vue 2.5.x, #6942 (by @rennai)
+- Added `allow-focus` attribute for Switch, #7494 (by @breadadams)
+
+### 1.4.6
+
+*2017-09-27*
+
+- Fixed Slider's button jumping to previous position when clicked, #7190
+- Fixed Tooltip `disabled` regression, #7198
+- Fixed Cascader not correctly filter options when `props` is set, #7225
+- Fixed an error when range typed DatePicker has an initial value of `[]`, #7233
+
+### 1.4.5
+
+*2017-09-24*
+
+- Rate's `colors` attribute now supports dynamic updates, #6872 @lukaszb
+- Fixed Tree not highlighting tree node whose value of `node-key` is 0, #6917
+- Fixed initially disabled Dropdown not showing menu when it's enabled, #6969
+- Added `hide-after` attribute for Tooltip, #6401 @ryatziv
+- Fixed cancel button of TimePicker not cancel picked value when clicked, #7028
+- Added `selectWhenUnmatched` attribute for Autocomplete, #6428 @ryatziv
+- Fixed when `beforeUpload` of a file returns false, other files are aborted by Upload, #7077
+- Fixed disabled dates of DatePicker in month view and year view not displayed correctly in the west hemisphere, #7114
+- `default-value` of DatePicker now supports daterange type, #7073 @wacky6
+
 ### 1.4.4
 
 *2017-09-05*
